@@ -1,8 +1,9 @@
-from mongoengine import Document, StringField, DateTimeField
+import mongoengine as me
 from datetime import datetime
-class SensorData(Document):
-    data = StringField(required=True)
-    timestamp = DateTimeField(default=datetime.now())
+class SensorData(me.Document):
+    temperature = me.FloatField(required=True)
+    day = me.StringField(default=datetime.today().strftime('%A'))
+    timestamp = me.DateTimeField(default=datetime.now())
 
     meta = {
         'collection': 'sensor_data'
@@ -10,6 +11,8 @@ class SensorData(Document):
 
     def to_json(self):
         return {
-            'data': self.data,
+            '_id': str(self.id),
+            'temperature': str(self.temperature) + '°C',
+            'day': self.day,
             'timestamp': self.timestamp
         }
